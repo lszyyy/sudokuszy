@@ -2,9 +2,13 @@
 
 Sudoku game
 
+## author
+Szygenda Léo
+
 ## Getting Started
 
-1. Make sure Flutter is installed
-2. Clone repository
-3. Retrieve dependencies: `flutter pub get`
-4. Run the app
+1. Make sure Flutter SDK is installed : https://docs.flutter.dev/get-started/install/
+2. Make sure Flutter plugin is installed
+3. Clone repository
+4. Retrieve dependencies: `flutter pub get`
+5. Run the app
