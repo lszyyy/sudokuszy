@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_starter/game.dart';
+import 'package:sudoku_starter/grid.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const Game(title: 'Flutter Demo Home Page'),
+      home: GridScreen(),
     );
   }
 }
