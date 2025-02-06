@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:sudoku_starter/game.dart';
 import 'package:sudoku_starter/grid.dart';
 
-import 'SudokuApiHelper.dart';
+import 'mainPage.dart';
+import 'endScreen.dart';
+import 'homeScreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +21,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: SudokuScreen(),
-    );
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const HomeScreen(), // Home screen
+        '/game': (context) => const SudokuScreen(), // Game screen
+        '/end': (context) => const EndScreen(), // Victory screen
+      },    );
   }
 }

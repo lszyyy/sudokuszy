@@ -45,7 +45,24 @@ class _SudokuGridState extends State<SudokuGrid> {
               width: cellSize,
               height: cellSize,
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.black, width: 0.3),
+                border: Border(
+                  top: BorderSide(
+                    color: Colors.blue,
+                    width: (row % 3 == 0) ? 2 : 0.3, // Thicker every 3rd row
+                  ),
+                  bottom: BorderSide(
+                    color: Colors.blue,
+                    width: (row == 8) ? 2 : 0.3, // Thickest at the last row
+                  ),
+                  left: BorderSide(
+                    color: Colors.blue,
+                    width: (col % 3 == 0) ? 2 : 0.3, // Thicker every 3rd column
+                  ),
+                  right: BorderSide(
+                    color: Colors.blue,
+                    width: (col == 8) ? 2 : 0.3, // Thickest at the last column
+                  ),
+                ),
                 color: isSelected
                     ? Colors.blueAccent.shade100.withAlpha(100)
                     : Colors.transparent,
@@ -62,4 +79,5 @@ class _SudokuGridState extends State<SudokuGrid> {
       ),
     );
   }
+
 }

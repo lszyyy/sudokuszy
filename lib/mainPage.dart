@@ -18,6 +18,19 @@ class _SudokuScreenState extends State<SudokuScreen> {
   int? selectedRow;
   int? selectedCol;
 
+
+  bool _isGameCompleted() {
+    for (int row = 0; row < 9; row++) {
+      for (int col = 0; col < 9; col++) {
+        int? userValue = _puzzle!.board()?.matrix()?[row][col].getValue();
+        int? expectedValue = _puzzle!.solvedBoard()?.matrix()?[row][col].getValue();
+        if (userValue != expectedValue) {
+          return false; // If any value is incorrect, the game is not finished
+        }
+      }
+    }
+    return true;
+  }
   @override
   void initState() {
     super.initState();
@@ -47,13 +60,16 @@ class _SudokuScreenState extends State<SudokuScreen> {
 
       if (expectedValue == value) {
         // Correct value -> Update puzzle and UI
-
         setState(() {_puzzle!.board()!.cellAt(pos).setValue(value);});
+        if (_isGameCompleted()) {
+          Navigator.pushReplacementNamed(context, '/end'); // 🎉 Redirect to win screen
+        }
       } else {
         // Incorrect value -> Show error message
         _showErrorSnackbar(value, expectedValue);
       }
     }
+
   }
 
   void _showErrorSnackbar(int enteredValue, int? correctValue) {
@@ -92,6 +108,8 @@ class _SudokuScreenState extends State<SudokuScreen> {
           const SizedBox(height: 20),
           _buildNumberPad(),
           const SizedBox(height: 20),
+          _buildTestEndButton(), // ✅ Added test button
+
         ],
       ),
     );
@@ -116,7 +134,21 @@ class _SudokuScreenState extends State<SudokuScreen> {
       ],
     );
   }
-
+  Widget _buildTestEndButton() {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.pushNamed(context, '/end'); // 🚀 Go to end screen for testing
+      },
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.all(16),
+        backgroundColor: Colors.amber,
+      ),
+      child: const Text(
+        'Aller à l\'écran de victoire',
+        style: TextStyle(fontSize: 18, color: Colors.white),
+      ),
+    );
+  }
   Widget _buildNumberButton(int number) {
     return Padding(
       padding: const EdgeInsets.all(5),
