@@ -36,7 +36,8 @@ class _SudokuGridState extends State<SudokuGrid> {
         itemBuilder: (context, index) {
           int row = index ~/ 9;
           int col = index % 9;
-          int? value = widget.puzzle.board()?.matrix()?[row][col].getValue();
+          int? userValue = widget.puzzle.board()?.matrix()?[row][col].getValue();
+          int? expectedValue = widget.puzzle.solvedBoard()?.matrix()?[row][col].getValue();
           bool isSelected = row == widget.selectedRow && col == widget.selectedCol;
 
           return InkWell(
@@ -52,8 +53,15 @@ class _SudokuGridState extends State<SudokuGrid> {
               ),
               child: Center(
                 child: Text(
-                  value != null && value > 0 ? value.toString() : '',
-                  style: const TextStyle(fontSize: 20),
+                  userValue != null && userValue > 0
+                      ? userValue.toString()
+                      : (expectedValue != null ? expectedValue.toString() : ''),
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: userValue != null && userValue > 0
+                        ? Colors.black // User-entered values in black
+                        : Colors.black12, // Expected values in black12
+                  ),
                 ),
               ),
             ),
