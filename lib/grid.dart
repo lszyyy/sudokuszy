@@ -1,42 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:sudoku_api/sudoku_api.dart';
 
 import 'innerGrid.dart';
+class SudokuGrid extends StatelessWidget {
+  final Puzzle puzzle;
 
-class GridScreen extends StatelessWidget {
+  const SudokuGrid({super.key, required this.puzzle});
+
   @override
   Widget build(BuildContext context) {
-    // Récupération de la hauteur et largeur de l'écran
-    double height = MediaQuery
-        .of(context)
-        .size
-        .height;
-    double width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double gridSize = MediaQuery.of(context).size.width * 0.9;
+    double cellSize = gridSize / 9;
+    double boxSize = gridSize / 6;
 
-    // Définition de la taille de la grille (moitié de l'écran)
-    double boxSize = (width < height ? width : height) / 6;
-
-    return Scaffold(
-      body: Center(
-        child: SizedBox(
-          height: boxSize * 3,
-          width: boxSize * 3,
-          child: GridView.count(
-            crossAxisCount: 3,
-            children: List.generate(9, (index) {
-              return Container(
-                width: boxSize,
-                height: boxSize,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.blueAccent, width: 2),
-                ),
-                child: InnerGrid(boxSize: boxSize), // Ajout de la grille interne
-              );
-            }),
-          ),
+    return SizedBox(
+      width: gridSize,
+      height: gridSize,
+      child: GridView.builder(
+        //  physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 9,
         ),
+        itemCount: 81,
+        itemBuilder: (context, index) {
+          int row = index ~/ 9;
+          int col = index % 9;
+          int? value = puzzle.board()?.matrix()?[row][col].getValue();
+
+          return Container(
+            width: cellSize,
+            height: cellSize,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black, width: 0.3),
+            ),
+            child: Center(
+              child: Text(
+                value != null && value > 0 ? value.toString() : '',
+                style: const TextStyle(fontSize: 20),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
