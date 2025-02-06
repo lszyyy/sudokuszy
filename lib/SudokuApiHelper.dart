@@ -1,3 +1,4 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sudoku_api/sudoku_api.dart';
@@ -41,10 +42,32 @@ class _SudokuScreenState extends State<SudokuScreen> {
 
   void _setCellValue(int value) {
     if (_puzzle != null && selectedRow != null && selectedCol != null) {
-      int pos = (selectedRow! * 9) + selectedCol!;
-      _puzzle!.board()!.cellAt(pos as Position).setValue(value);
-      setState(() {}); // Refresh UI after setting value
+      Position pos = Position(row: selectedRow!, column: selectedCol!);
+      int? expectedValue = _puzzle!.solvedBoard()?.matrix()?[selectedRow!][selectedCol!].getValue();
+
+      if (expectedValue == value) {
+        // Correct value -> Update puzzle and UI
+
+        setState(() {_puzzle!.board()!.cellAt(pos).setValue(value);});
+      } else {
+        // Incorrect value -> Show error message
+        _showErrorSnackbar(value, expectedValue);
+      }
     }
+  }
+
+  void _showErrorSnackbar(int enteredValue, int? correctValue) {
+    final snackBar = SnackBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      content: AwesomeSnackbarContent(
+        title: 'Mauvaise valeur !',
+        message: 'Le chiffre $enteredValue est incorrect.',
+        contentType: ContentType.failure,
+      ),
+      behavior: SnackBarBehavior.floating,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
@@ -60,14 +83,14 @@ class _SudokuScreenState extends State<SudokuScreen> {
                   ? const CircularProgressIndicator()
                   : SudokuGrid(
                 puzzle: _puzzle!,
-                onCellSelected: _selectCell, // Pass selection callback
+                onCellSelected: _selectCell,
                 selectedRow: selectedRow,
                 selectedCol: selectedCol,
               ),
             ),
           ),
           const SizedBox(height: 20),
-          _buildNumberPad(), // Add the number pad below the grid
+          _buildNumberPad(),
           const SizedBox(height: 20),
         ],
       ),
@@ -75,23 +98,39 @@ class _SudokuScreenState extends State<SudokuScreen> {
   }
 
   Widget _buildNumberPad() {
-    return Wrap(
-      alignment: WrapAlignment.center,
-      spacing: 10,
-      children: List.generate(9, (index) {
-        int number = index + 1;
-        return ElevatedButton(
-          onPressed: () => _setCellValue(number),
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.all(16),
-            minimumSize: const Size(50, 50),
-          ),
-          child: Text(
-            number.toString(),
-            style: const TextStyle(fontSize: 24),
-          ),
-        );
-      }),
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(5, (index) {
+            return _buildNumberButton(index + 1);
+          }),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(4, (index) {
+            return _buildNumberButton(index + 6);
+          }),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNumberButton(int number) {
+    return Padding(
+      padding: const EdgeInsets.all(5),
+      child: ElevatedButton(
+        onPressed: () => _setCellValue(number),
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.all(16),
+          minimumSize: const Size(50, 50),
+        ),
+        child: Text(
+          number.toString(),
+          style: const TextStyle(fontSize: 24),
+        ),
+      ),
     );
   }
 }

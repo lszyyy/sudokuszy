@@ -28,7 +28,7 @@ class _SudokuGridState extends State<SudokuGrid> {
       width: gridSize,
       height: gridSize,
       child: GridView.builder(
-        physics: const NeverScrollableScrollPhysics(),
+        //physics: const NeverScrollableScrollPhysics(),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 9,
         ),
@@ -37,7 +37,6 @@ class _SudokuGridState extends State<SudokuGrid> {
           int row = index ~/ 9;
           int col = index % 9;
           int? userValue = widget.puzzle.board()?.matrix()?[row][col].getValue();
-          int? expectedValue = widget.puzzle.solvedBoard()?.matrix()?[row][col].getValue();
           bool isSelected = row == widget.selectedRow && col == widget.selectedCol;
 
           return InkWell(
@@ -53,15 +52,8 @@ class _SudokuGridState extends State<SudokuGrid> {
               ),
               child: Center(
                 child: Text(
-                  userValue != null && userValue > 0
-                      ? userValue.toString()
-                      : (expectedValue != null ? expectedValue.toString() : ''),
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: userValue != null && userValue > 0
-                        ? Colors.black // User-entered values in black
-                        : Colors.black12, // Expected values in black12
-                  ),
+                  userValue != null && userValue > 0 ? userValue.toString() : '',
+                  style: const TextStyle(fontSize: 20, color: Colors.black),
                 ),
               ),
             ),
