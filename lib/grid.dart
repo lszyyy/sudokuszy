@@ -3,24 +3,22 @@ import 'package:sudoku_api/sudoku_api.dart';
 
 class SudokuGrid extends StatefulWidget {
   final Puzzle puzzle;
+  final Function(int, int) onCellSelected;
+  final int? selectedRow;
+  final int? selectedCol;
 
-  const SudokuGrid({super.key, required this.puzzle});
-
+  const SudokuGrid({
+    super.key,
+    required this.puzzle,
+    required this.onCellSelected,
+    this.selectedRow,
+    this.selectedCol,
+  });
   @override
   _SudokuGridState createState() => _SudokuGridState();
 }
 
 class _SudokuGridState extends State<SudokuGrid> {
-  int? selectedRow;
-  int? selectedCol;
-
-  void _selectCell(int row, int col) {
-    setState(() {
-      selectedRow = row;
-      selectedCol = col;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     double gridSize = MediaQuery.of(context).size.width * 0.9;
@@ -39,10 +37,10 @@ class _SudokuGridState extends State<SudokuGrid> {
           int row = index ~/ 9;
           int col = index % 9;
           int? value = widget.puzzle.board()?.matrix()?[row][col].getValue();
-          bool isSelected = row == selectedRow && col == selectedCol;
+          bool isSelected = row == widget.selectedRow && col == widget.selectedCol;
 
           return InkWell(
-            onTap: () => _selectCell(row, col),
+            onTap: () => widget.onCellSelected(row, col),
             child: Container(
               width: cellSize,
               height: cellSize,
